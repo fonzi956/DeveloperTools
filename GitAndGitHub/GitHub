@@ -1,0 +1,1230 @@
+Intro
+Expected Knowledge
+
+    creating repositories with git init and git clone
+    reviewing repos with git status
+    using git log and git show to review past commits
+    being able to make commits with git add
+    commit them to the repo with git commit
+    you need to know about branching, merging branches together, and resolving merge conflicts
+    and being able to undo things in Git:
+        git commit --amend to undo the most recent commit or to change the wording of the commit message
+        and git reset If you're comfortable with all of these, then you'll be good to go for this course.
+
+
+
+Remote Repositories
+Collaboration Setup
+
+As a lone developer, you're probably comfortable working with a local repository. In this first lesson, we're going to talk about remote repositories and interacting with these remote repositories.
+
+Let's say that you have a friend, we'll call her Farrin, and one day you two were together and you showed her what you've been working on. She had some ideas on features she could contribute to the project. But you don't want to give her your computer for her to make these changes, you want her to work on her computer. And, you don't want to have to wait for her to add these features, you want to keep working on the project and then just merge in her changes with she's finished. So how can we do that?
+
+Well, let me tell you that emailing the project back and forth would be a maintenance nightmare after about two emails. You're already tracking your project with Git, so we'll use it to manage everything.
+
+So Farrin will work on the project on a specific branch and any changes she makes she'll add to that branch. While she's working in her branch, you'll work on the project but on your own specific branch. And then you can merge these branches together when you get the branch from Farrin.
+
+    💡 Always Use Topic Branches
+
+    Remember that it's incredibly helpful to make all of your commits on descriptively named topic branches. Branches help isolate unrelated changes from each other.
+
+    So when you're collaborating with other developers make sure to create a new branch that has a descriptive name that describes what changes it contains.
+
+What is a Remote Repository?
+
+Git is a distributed version control system which means there is not one main repository of information. Each developer has a copy of the repository. So you can have a copy of the repository (which includes the published commits and version history) and your friend can also have a copy of the same repository. Each repository has the exact same information that the other ones have, there's no one repository that's the main one.
+
+Up until this point, you have probably been only working locally on a local repository. A remote repository is the same Git repository like yours but it exists somewhere else.
+_A local repository is the one that you work on in your local machine. Remote repositories live elsewhere (e.g. a friend's computer, GitHub, etc.)_
+
+A local repository is the one that you work on in your local machine. Remote repositories live elsewhere (e.g. a friend's computer, GitHub, etc.)
+Ways to access a Remote
+
+Remotes can be accessed in a couple of ways:
+
+    with a URL
+    path to a file system
+
+Even though it's possible to create a remote repository on your file system, it's very rarely used. By far the most common way to access a remote repository is through a URL to a repository that’s out on the web.
+
+The way we can interact and control a remote repository is through the Git remote command:
+
+$ git remote
+
+You're also not limited to just one remote. You can add as many remote repositories as you want!
+_A local repository can be connected to more than one remote repository._
+
+A local repository can be connected to more than one remote repository.
+Why Multiple Remotes?
+
+Why would you want to have multiple remote repositories? We'll look at this later but briefly, if you are working with multiple developers then you might want to get changes they're working on in their branch(es) into your project before they merge them into the master branch. You might want to do this if you want to test out their change before you decide to implement your changes.
+
+Another example is if you have a project whose code is hosted on Github but deploys via Git to Heroku. You would have one remote for the master and one for the deployment.
+Make a Remote
+
+Now that we've learned about the purpose of remote repositories, let's add a remote repository to our own local one.
+
+
+
+Add A Remote Repository
+The Git Remote Command
+
+The git remote command will let you manage and interact with remote repositories.
+
+$ git remote
+
+Try running this command on a local repository that you haven't shared with anyone yet. What do you get?
+_The Terminal application running the `git remote` command. No output is displayed since this repository does not have a connection to a remote._
+
+The Terminal application running the git remote command. No output is displayed since this repository does not have a connection to a remote.
+
+If you haven't configured a remote repository then this command will display nothing. One caveat to this is if you have cloned a repository. If you have, then your repository will automatically have a remote because it was cloned from the repository at the URL you provided. Let's look at a repository that has been cloned.
+_The Terminal application running the `git remote` command. It outputs the word `origin`._
+
+The Terminal application running the git remote command. It outputs the word origin.
+
+The project I'm in is a clone of a Google's project called Lighthouse. This project was cloned from GitHub and is for auditing, performance metrics, and best practices for Progressive Web Apps.
+Remote Shortnames
+
+The output of git remote is just the word origin. Well that's weird. The word "origin", here, is referred to as a "shortname". A shortname is just a short and easy way to refer to the location of the remote repository. A shortname is local to the current repository (as in, your local repository). The word "origin" is the defacto name that's used to refer to the main remote repository. It's possible to rename this to something else, but typically it's left as "origin".
+
+Why do we care about how easy it is to refer to a remote repositories location? Well as you'll soon find out we'll be needing the path to the remote repository in a lot of our commands. And it's a lot easier to use just a name rather than the entire path to the remote repository.
+
+For example which one of these is easier to understand:
+
+    Head north for about a quarter of a mile, then turn left, go straight down that road for about 5 miles, then turn right, proceed straight for about 300 feet until you past the blue mailbox, turn left down Jack Street, go 50 feet then turn left again on Owen Road, that will curve around until you hit Finn Lane. The structure that's the third one on the left
+    Grandma's house
+
+You can see that it's a lot easier to refer to a location by just a short name like Grandma's house rather than the entire way to get there from your current location 😉
+
+If you want to see the full path to the remote repository, then all you have to do is use the -v flag:
+_The Terminal application running the `git remote` command. The output includes the shortname and the full URL that it refers to._
+
+The Terminal application running the git remote command. The output includes the shortname and the full URL that it refers to.
+
+Here you can see that if the word origin is used, what actually is used is the path to https://github.com/GoogleChrome/lighthouse.git . It also might seem a little bit odd that there are now two remotes both of them "origin" and both going to the same URL. The only difference is right at the end: the (fetch) part and the (push) part
+
+We'll be looking at both fetch and push in upcoming sections.
+
+We've done enough looking for now. Let's do something active and create our own simple project and send it to a remote repository!
+Create A Simple Project
+
+We're going to need a sample project to use during this course to test out working with remote repositories, sending updates to the remote repository, and getting changes from the remote repository, too.
+Question 1 of 5
+
+If you don't have a project that you want to use then you can follow along with me!
+
+    create a new directory for your project with the name my-travel-plans
+
+    use git init to turn the my-travel-plans directory into a Git repository
+
+    create a README.md file
+
+    create index.html
+
+    create app.css
+
+README File Content
+
+# Travel Destinations
+
+A simple app to keep track of destinations I'd like to visit.
+
+HTML File Content
+
+Add the following content to the index.html file:
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Travels</title>
+    <meta name="description" content="">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+    <div class="container">
+        <div class="destination-container">
+            <div class="destination" id="florida">
+                <h2>Florida</h2>
+            </div>
+
+            <div class="destination" id="paris">
+                <h2>Paris</h2>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+CSS File Content
+
+Add the following information to the CSS file:
+
+html {
+    box-sizing: border-box;
+    height: 100%;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+body {
+    display: flex;
+    margin: 0;
+    height: 100%;
+}
+
+.container {
+    margin: auto;
+    padding: 1em;
+    width: 80%;
+}
+
+.destination-container {
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+}
+
+.destination {
+    background: #03a9f4;
+    box-shadow: 0 1px 9px 0 rgba(0, 0, 0, 0.4);
+    color: white;
+    margin: 0.5em;
+    min-height: 200px;
+    flex: 0 1 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+h2 {
+    margin: 0;
+    transform: rotate(-45deg);
+    text-shadow: 0 0 5px #01579b;
+}
+
+#florida {
+    background-color: #03a9f4;
+}
+
+#paris {
+    background-color: #d32f2f;
+}
+
+At this point this is what my project looks like but remember your project can be anything you want you just need to make sure you have a project with some commits in it.
+_A simple web application that shows the destinations I want to go to (Florida and Paris) opened in the Chrome browser._
+
+A simple web application that shows the destinations I want to go to (Florida and Paris) opened in the Chrome browser.
+Question 2 of 5
+
+Let's make sure you're all set to continue. Please check off each of the following:
+
+    I have created a new directory for my project with the name my-travel-plans
+
+    I've turned the project into a Git repo
+
+    I've added at least one file to the project
+
+    I've commited the file with git commit (for example, Initial commit)
+
+Hosting on GitHub
+
+There are several options for us to host Git projects. But one of the most popular hosting sites is a service called GitHub which you might have heard of before. Now the problem with GitHub is that the name is so similar to Git that people sometimes conflate Git and GitHub and think they're the same thing when they're actually quite different.
+
+    Git is a version control tool
+    GitHub is a service to host Git projects
+
+If you are already familiar with GitHub and know how to create a repo without initializing a README, you can skip this video and go ahead and make your repo with the same name as your sample project, and remember not to initialize a readme.
+
+If you don't have an account yet, sign up for one on GitHub's join page. There are different types of GitHub accounts you can sign up for but the free tier is all that we need for this course. And a free account is what most people use anyway. Once you create your account, sign in to GitHub and you'll be on the home page:
+_This is what my account shows right after signing in. Your information will be different depending on the number of repositories you have and other users and repositories you follow._
+
+This is what my account shows right after signing in. Your information will be different depending on the number of repositories you have and other users and repositories you follow.
+
+Just like every website, GitHub updates its interface quite often so if what you're saying doesn't look exactly like the image above don't worry the important features will be the same.
+
+The important thing we need to look at right now is how to create a new Repository. There are actually two ways to do this from the homepage:
+
+    from the navbar
+    the green "new repository" button part way down the page on the right side
+
+_GitHub has two locations where you can create a new repository. The plus icon located in the page's header and the "New Repository" button in the middle of the page._
+
+GitHub has two locations where you can create a new repository. The plus icon located in the page's header and the "New Repository" button in the middle of the page.
+
+I use the button in the navigation bar because the navigation bar is available on every single page, which makes it easy to get to the new repo link.
+_Clicking on the plus icon in GitHub's header displays a dropdown of options. One option is the "New repository" link._
+
+Clicking on the plus icon in GitHub's header displays a dropdown of options. One option is the "New repository" link.
+
+In the dropdown, the New repository link takes you to the repository creation page. We only need to fill out just one field in this form - the repository name field.
+_GitHub's Create a new repository page. The only required field is the `Repository name` field._
+
+GitHub's Create a new repository page. The only required field is the Repository name field.
+
+Typically you want to use the name of your project as the name of the repository. Creating a repository, modifying it later, or deleting it is relatively easy so don't feel like you have to get the name perfect right here on this page. I'm going to create a repository called "my-travel-plans" that's the same name as the sample project I created.
+
+It's okay to leave the description empty for now (although, you can provide one if you want). Because I'm on the free tier plan, my repository has to be public (which means my repository and all my code will be freely available for anyone to look at). If I want this to be a private repository, then I'd choose "Private" which will cause GitHub to ask for my credit card information and will also upgrade me to a paid plan.
+
+I'm also going to leave the "Initialize this repository with the README" option unchecked because I don't want GitHub to add a README file for me.
+⚠️ Don't Initialize with a README ⚠️
+
+Make sure that you leave the "Initialize this repository with the README" unchecked. We'll be providing our own README, so we don't want GitHub to provide one automatically.
+
+Also, if we let GitHub auto-generate a new README file for us, then we won't be provided with the setup commands to run in the terminal. It's still possible to get that information, but it will be hidden away.
+
+So just make sure to leave this field unchecked, and you'll be good to go!
+
+Now just clicked that big "Create Repository" button to create your remote repository!
+
+Remember that the git remote command is used to create and manage remote repositories. So I'll use the following command to create a connection from my local repository to the remote repository I just created on my GitHub account:
+
+$ git remote add origin https://github.com/richardkalehoff/RichardsFantasticProject.git
+
+⚠️ Remotes & Permissions ⚠️
+
+Warning: It's important that you use the URL for the new repository that you created on your GitHub profile. Do not use the one above because that's for the project I just created on my account. Because this project is on my account you do not have access to send changes to it.
+
+So make sure you use the URL from your project.
+
+The friends Kagure, Jack, Owen, and Finn each have their own my-travel-plans project at:
+
+    https://github.com/kagure/my-travel-plans.git
+    https://github.com/jack/my-travel-plans.git
+    https://github.com/owen/my-travel-plans.git
+    https://github.com/finn/my-travel-plans.git
+
+Question 3 of 5
+
+Whose repository is being cloned in the following command?
+
+$ git clone https://github.com/owen/my-travel-plans.git
+
+Owen's
+Question 4 of 5
+
+Jonathan and Allison are working on a project together. Jonathan creates a project on GitHub at the URL https://github.com/docsrus/brain-mapping.git .
+
+If Allison runs git clone https://github.com/docsrus/brain-mapping.git, will she have permission to make changes to Jonathan's project on GitHub?
+
+    No
+
+There are a couple of things to notice about the command you just ran on the command line:
+
+    first, this command has the sub command add
+
+    the word origin is used - this is setting the shortname that we discussed earlier
+        Remember that the word origin here isn't special in any way.
+
+        If you want to change this to repo-on-GitHub, then (before running the command) just change the word "origin" to "repo-on-GitHub":
+
+        $ git remote add repo-on-GitHub https://github.com/richardkalehoff/RichardsFantasticProject.git
+    third, the full path to the repository is added (i.e. the URL to the remote repository on the web)
+
+Now I'll use git remote -v to verify that I've added the remote repository correctly:
+_`git remote add` was used to create a shortname of `origin` that points to the project on GitHub. Running `git remote -v` displays both the shortname and the URL._
+
+git remote add was used to create a shortname of origin that points to the project on GitHub. Running git remote -v displays both the shortname and the URL.
+
+Fantastic! Everything is looking good. I've added a link to my remote repository with the git remote add command, and then I verified that everything looks correct with git remote -v.
+Question 5 of 5
+
+Let's make sure we're on the same page. Make sure you can answer all of these:
+
+    I have created my remote repository on GitHub
+
+    I've used git remote add to create a connection from my local repository to the remote repository
+
+    I've used git remote -v to verify that the shortname is there with the correct URL
+
+Recap
+
+A remote repository is a repository that's just like the one you're using but it's just stored at a different location. To manage a remote repository, use the git remote command:
+
+$ git remote
+
+    It's possible to have links to multiple different remote repositories.
+    A shortname is the name that's used to refer to a remote repository's location. Typically the location is a URL, but it could be a file path on the same computer.
+    git remote add is used to add a connection to a new remote repository.
+    git remote -v is used to see the details about a connection to a remote.
+
+Further Research
+https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes#_showing_your_remotes
+https://git-scm.com/docs/git-remote
+
+
+Push Changes To A Remote
+Reviewing Commits
+
+Let's take a look at the commits that I have in my Repository.
+_The terminal application displaying the log of the project's commits._
+
+The terminal application displaying the log of the project's commits.
+
+I used the following log command to display these commits
+
+$ git log --oneline --graph --decorate --all
+
+These commits are only in the local repository, though. They haven't been sent up to the remote repository yet. When commits are sent to the remote a remote branch indicator will appear in the log. Since there aren't any remote branch indicators we can tell that there are no commits on the remote repository. But just to be 100% certain let's look at the remote repository on GitHub to see if there any commits.
+_The remote repository doesn't contain any commits, so GitHub displays the repository's setup screen._
+
+The remote repository doesn't contain any commits, so GitHub displays the repository's setup screen.
+
+Since we haven't sent any commits update to GitHub yet it's still showing us the setup screen to tell us how we can connect our local repository to the remote repository and send some commits. Since this is still the setup screen we can know that there are no commits in the remote repository.
+Sending Commits
+
+To send local commits to a remote repository you need to use the git push command. You provide the remote short name and then you supply the name of the branch that contains the commits you want to push:
+
+$ git push <remote-shortname> <branch>
+
+My remote's shortname is origin and the commits that I want to push are on the master branch. So I'll use the following command to send my commits to the remote repository on GitHub:
+
+$ git push origin master
+
+_The terminal application showing the `git push` command. It asks for my username, password (which isn't displayed), and then displays information about what it's doing to send the commits._
+
+The terminal application showing the git push command. It asks for my username, password (which isn't displayed), and then displays information about what it's doing to send the commits.
+
+There a couple of things to notice:
+
+    Depending on how you have configured GitHub and the remote URL that's being used, you might have to enter your username and password.
+        this will happen if you use the HTTP version of the remote (rather than the ssh version)
+        If you have configured GitHub to use the SSH protocol and have supplied it with your SSH key then you don't need to worry about doing this step. Check the Connecting to GitHub with SSH documentation page if you're interested in using SSH with GitHub.
+    If you have to enter your username and password your username will show up after typing but your password will not. So just keep typing your password and press enter when you're done.
+        If you encounter any errors with your password don't worry it'll just ask you to type it in again
+    Git does some compressing of things to make it smaller and then sends those off to the remote
+    A new branch is created - at the very bottom it says [new branch] and then master -> master
+
+Now let's look at GitHub:
+_My entire project is up on GitHub!_
+
+My entire project is up on GitHub!
+
+Our project is up on GitHub - how awesome and easy was that! One cool feature that GitHub does is that it automatically shows the content of the README file which can be extremely helpful.
+
+GitHub also displays a lot of details about our Repository. Right now it's showing that there are:
+
+    three commits
+    one branch
+    one contributor
+
+_The project's main page on GitHub displays information about the repository._
+
+The project's main page on GitHub displays information about the repository.
+
+Now before we move on, let's just check the local repository to see how it changed after pushing.
+
+Run the following command:
+
+$ git log --oneline --graph --decorate --all
+
+Important: make sure to include the --decorate and --all flags
+_The terminal application showing the results of running `git log --oneline --graph --decorate --all`. The new `origin/master` tracking branch now exists._
+
+The terminal application showing the results of running git log --oneline --graph --decorate --all. The new origin/master tracking branch now exists.
+
+We now have a new marker in the output! This marker is origin/master and is called a tracking branch. A tracking branch's name includes the shortname of the remote repository as well as the name of the branch. So the tracking branch origin/master is telling us that the remote origin has a master branch that points to commit 9b7d28f (and includes all of the commits before 9b7d28f). This is really helpful because this means we can track the information of the remote Repository right here in our local one!
+
+One very important thing to know is that this origin/master tracking branch is not a live representation of where the branch exists on the remote repository. If a change is made to the remote repository not by us but by someone else, the origin/master tracking branch in our local repository will not move. We have to tell it to go check for any updates and then it will move. We'll look at how to do this in the next section.
+Recap
+
+The git push command is used to send commits from a local repository to a remote repository.
+
+$ git push origin master
+
+The git push command takes:
+
+    the shortname of the remote repository you want to send commits to
+    the name of the branch that has the commits you want to send
+
+
+
+Pulling Changes From A Remote
+Pull changes from a remote
+
+Let’s say that we are in a situation where there are commits on the remote repository that we do not have in our local repository. This can happen in several ways: You could be working on a team, and a co-worker has pushed new changes to the remote. Alternatively, you could be working on the same project but from different computers -- for example, say you have a work computer and a personal computer, and you contribute to the repo from both of them. If you push changes to the repo from your work computer, the local repo on your personal computer will not reflect those changes. How do we sync new changes that are on the remote into the local repository? That's exactly where we're going to be looking at now. Let's first look at how pulling in remote changes works in theory, then we'll actually do it ourselves!
+
+I said it before but I'll say it again, the branch that appears in the local repository is actually tracking a branch in the remote repository (e.g. origin/master in the local repository is called a tracking branch because it's tracking the progress of the master branch on the remote repository that has the shortname "origin").
+Add remote changes
+
+Since we don't have any commits on our remote repository yet and we're not collaborating with anybody we're going to fake it and add some commits manually through GitHub's interface on the web.
+
+A walk-through video is below. Use the code snippets to follow along in the video.
+New CSS Content
+
+Add the following new ruleset:
+
+.destination:hover h2 {
+    transform: rotate(0deg);
+}
+
+Add transition: transform 0.5s; to the h2 ruleset, so it should now be:
+
+h2 {
+    margin: 0;
+    transform: rotate(-45deg);
+    transition: transform 0.5s;
+    text-shadow: 0 0 5px #01579b;
+}
+
+    ⚠️ Prefer Working Locally ⚠️
+
+    Because GitHub has a web interface, it allows you to add commits manually through its interface. But just because you can do thing, doesn't mean you should. I've demoed making these changes this way so that we could simulate commits being on the remote repository but not in the local repository. But I recommend that you should always work locally on a project and then push those changes to the remote repository.
+
+Retrieve remote commits
+
+Now let's compare our local repository and our remote repository. We only have three commits in our local repository:
+_Our local repository only has three commits in it._
+
+Our local repository only has three commits in it.
+
+While there are actually four commits in the remote repository:
+_The remote repository on GitHub has four commits. The three from our local repository and the one we manually added on GitHub._
+
+The remote repository on GitHub has four commits. The three from our local repository and the one we manually added on GitHub.
+Pulling Changes with git pull
+
+The local commits end at commit 5a010d1 while the remote has two extra commits - commit 4b81b2a and commit b847434.
+
+Also, notice that in our local repository when we did the git log the origin/master branch is still pointing to commit 5a010d1.
+
+Remember that the origin/master branch is not a live mapping of where the remote's master branch is located. If the remote's master moves, the local origin/master branch does stays the same. To update this branch, we need to sync the two together.
+
+git push will sync the remote repository with the local repository. To do with the opposite (to sync the local with the remote), we need to use git pull. The format for git pull is very similar to git push - you provided the shortname for the remote repository and then the name of the branch you want to pull in the commits.
+
+$ git pull origin master
+
+_Running `git pull origin master` will retrieve the commits from the `master` branch on the `origin` remote repository._
+
+Running git pull origin master will retrieve the commits from the master branch on the origin remote repository.
+
+There's several things to note about running this command:
+
+    the format is very similar to that of git push - there's counting and compressing and packing of items
+    it has the phrase "fast-forward" which means Git did a fast-forward merge (we'll dig into this in just a second)
+        it displays information similar to git log --stat where it shows the files that have been changed and how many lines were added or removed in them
+
+If you don't want to automatically merge the local branch with the tracking branch then you wouldn't use git pull you would use a different command called git fetch. You might want to do this if there are commits on the repository that you don't have but there are also commits on the local repository that the remote one doesn't have either.
+
+Let's take a look at git fetch.
+Recap
+
+If there are changes in a remote repository that you'd like to include in your local repository, then you want to pull in those changes. To do that with Git, you'd use the git pull command. You tell Git the shortname of the remote you want to get the changes from and then the branch that has the changes you want:
+
+$ git pull origin master
+
+When git pull is run, the following things happen:
+
+    the commit(s) on the remote branch are copied to the local repository
+    the local tracking branch (origin/master) is moved to point to the most recent commit
+    the local tracking branch (origin/master) is merged into the local branch (master)
+
+Also, changes can be manually added on GitHub (but this is not recommended, so don't do it).
+
+
+Pull vs Fetch
+Git fetch is used to retrieve commits from a remote repository's branch but it does not automatically merge the local branch with the remote tracking branch after those commits have been received.
+
+The above paragraph is a little dense so why don't you reread it one more time.
+
+You provide the exact same information to git fetch as you do for git pull. So you provide the shortname of the remote repository you want to fetch from and then the branch you want to fetch:
+
+$ git fetch origin master
+
+When git fetch is run, the following things happen:
+
+    the commit(s) on the remote branch are copied to the local repository
+    the local tracking branch (e.g. origin/master) is moved to point to the most recent commit
+
+The important thing to note is that the local branch does not change at all.
+
+You can think of git fetch as half of a git pull. The other half of git pull is the merging aspect.
+
+One main point when you want to use git fetch rather than git pull is if your remote branch and your local branch both have changes that neither of the other ones has. In this case, you want to fetch the remote changes to get them in your local branch and then perform a merge manually. Then you can push that new merge commit back to the remote.
+
+Let's take a look at that.
+Recap
+
+You can think of the git pull command as doing two things:
+
+    fetching remote changes (which adds the commits to the local repository and moves the tracking branch to point to them)
+    merging the local branch with the tracking branch
+
+The git fetch command is just the first step. It just retrieves the commits and moves the tracking branch. It does not merge the local branch with the tracking branch. The same information provided to git pull is passed to git fetch:
+
+    the shorname of the remote repository
+    the branch with commits to retrieve
+
+$ git fetch origin master
+
+
+
+
+
+
+Forking A Repository
+In version control terminology if you "fork" a repository that means you duplicate it. Typically you fork a repository that belongs to someone else. So you make an identical copy of their repository and that duplicate copy now belongs to you.
+
+This concept of "forking" is also different from "cloning". When you clone a repository, you get an identical copy of the repository. But cloning happens on your local machine and you clone a remote repository. When you fork a repository, a new duplicate copy of the remote repository is created. This new copy is also a remote repository, but it now belongs to you.
+A fork Subcommand?
+
+Forking is not done on the command line; there is no git fork command. Go ahead, try running the following command:
+
+$ git fork
+
+_Running the (nonexistent!) `git fork` command on the terminal. Git doesn't have a `fork` subcommand, so it responds with a suggestion to use an alternative command._
+
+Running the (nonexistent!) git fork command on the terminal. Git doesn't have a fork subcommand, so it responds with a suggestion to use an alternative command.
+
+As you can see, trying to run the git fork command produces an error. (Also, fsck is not a rude word, it means "filesystem check" and refers to auditing the files for consistency.)
+Alter a Cloned Repo
+Do the following steps and answer the question below.
+Task List
+Question 1 of 2
+
+Were you able to successfully push your changes to the remote repository?
+
+    No
+
+Question 2 of 2
+
+One of the lines that was displayed after you tried to push includes the word "fatal". What comes right after that word?
+
+unable to access
+
+We can see from this little experiment that if a repository doesn't belong to your account then it means you do not have permission to modify it.
+
+This is where forking comes in! Instead of modifying the original repository directly, if you fork the repository to your own account then you will have full control over that repository.
+Forking Lam's Project
+
+I'm going to clone Lam's project myself. My account does not have permission to edit her repository directly, so I'll fork the repository to my own account.
+I want you to sign into your GitHub account and follow along with the rest of these steps:
+Task List
+
+Let's take a look at the name of the repository:
+_Forking a project displays the new project name next to your GitHub profile name. Also, below that it says where the original project exists._
+
+Forking a project displays the new project name next to your GitHub profile name. Also, below that it says where the original project exists.
+
+See how this shows my account name (richardkalehoff) and the name of the repository? But then just beneath that it says "forked from udacity/course-collaboration-travel-plans". This shows that this project is in my account but that it has a connection to the original project that it was copied from.
+
+That's pretty neat, right?!? You can fork any public repository that's up on GitHub right now - which means you can get a copy of that repository in your own account that you will have total control over.
+
+Why don't you go fork a few repositories just to get some practice! Here a few you can try it out on:
+
+    https://github.com/udacity/course-git-blog-project
+    https://github.com/udacity/frontend-nanodegree-styleguide
+    https://github.com/GoogleChrome/lighthouse
+    https://github.com/jquery/jquery
+
+Push/Pull To The Fork
+
+Because forking a repository gives you a copy of it in your account, you can clone at down to your computer, make changes to it, and then push those changes back to the forked repository. But you need to keep in mind that it'll be pushing the changes back to your remote repository not to the original remote repository that you forked from.
+Recap
+
+Forking is an action that's done on a hosting service, like GitHub. Forking a repository creates an identical copy of the original repository and moves this copy to your account. You have total control over this forked repository. Modifying your forked repository does not alter the original repository in any way.
+
+
+
+
+Reviewing Existing Work
+Reviewing Existing Work
+
+When you're the sole developer on a project, it's easy to know what progress has been done on the project because you did everything yourself. Things can become a bit more complicated, though, when you're working on a team - whether that team is local in an office or if you are developing with someone just across the internet.
+
+Sometimes it can be hard to see what the other developers have been doing on the project. Especially if developers are working across multiple different branches. How can I see all of the commits that Deepesh made? Or what if Christine made a change and said that her commit resolves issue 47 in our project's ticket tracking system. How can we discover the all of this information in the repository?
+
+We can discover details about what other developers have done by using the extremely powerful git log command.
+Clone Lighthouse Project
+
+We first need to download a project that is being worked on by multiple different people. Let's download the Lighthouse project by Google that's an app for auditing, performance metrics, and best practices for Progressive web apps.
+
+Here's the Lighthouse project on GitHub.
+_Cloning Google's Lighthouse project from GitHub._
+
+Cloning Google's Lighthouse project from GitHub.
+Let's make sure we're both on the same page. Make sure to:
+Task List
+Filtering Collaborator's Commits
+
+Being able to narrow down the commits to just the ones you're looking for can be a chore. Let's look at the different ways we can discover information that our collaborators have done!
+Group By Commit Author
+
+This is not a massive project, but it does have well over 1,000 commits. A quick way that we can see how many commits each contributor has added to the repository is to use the git shortlog command:
+
+$ git shortlog
+
+_The terminal showing the results of running the `git shortlog` command. It displays all commits sorted by author._
+
+The terminal showing the results of running the git shortlog command. It displays all commits sorted by author.
+
+In the screenshot above we can see that:
+
+    Abby Armada has made one commit in the repository
+    Addy Osmani has made seven commits
+    Adriano Caheté has made one commit
+    André Cipriani Bandarra has made one commit
+
+git shortlog displays an alphabetical list of names and the commit messages that go along with them. If we just want to see just the number of commits that each developer has made, we can add a couple of flags: -s to show just the number of commits (rather than each commit's message) and -n to sort them numerically (rather than alphabetically by author name).
+
+$ git shortlog -s -n
+
+_`git shortlog` with the `-s -n` flags to show only the number of commits each author has made, sorted numerically._
+
+git shortlog with the -s -n flags to show only the number of commits each author has made, sorted numerically.
+
+We can see in the image above that Surma has added five commits to the Lighthouse project. These five commits are spread out throughout the repository. What if we want to see just these five commits by Surma, though?
+Filter By Author
+
+Another way that we can display all of the commits by an author is to use the regular git log command but include the --author flag to filter the commits to the provided author.
+
+$ git log --author=Surma
+
+_The terminal application showing the result of running `git log --author=Surma`. The output displays only the commits that Surma made._
+
+The terminal application showing the result of running git log --author=Surma. The output displays only the commits that Surma made.
+Question 1 of 3
+
+If you run git shortlog -s -n, again, you'll see that there is a "Paul Irish" and a "Paul Lewis". If the following command were run:
+
+$ git log --author=Paul
+
+What would it display?
+
+commits by both Paul Irish and Paul Lewis
+
+If we wanted to see only the commits by Paul Lewis we have to run:
+
+$ git log --author="Paul Lewis"
+
+    ⚠️ Quotes Are Important ⚠️
+
+    Pay attention to the use of the quotes in the previous command. If it were written without the quotes like this git log --author=Paul Lewis, it would not work. If it's formatted this way without the quotes, Git would think that Lewis is not part of the "author" flag, and it would cause an error.
+
+What are the first seven characters of the SHA for Paul Lewis' first commit in the Lighthouse project?
+74690f1
+Filter Commits By Search
+
+Before going through this section on filtering by searching, I feel like I need to stress how important it is to write good, descriptive commit messages. If you write a descriptive commit message, then it's so much easier to search through the commit messages, later, to find exactly what you're looking for.
+
+And remember, if the commit message is not enough for you to explain what the commit is for, you can provide a detailed description of exactly why the commit is needed in the description area.
+
+Let see an example of extra details in a commit in the lighthouse project by looking at commit 5966b66:
+
+$ git show 5966b66
+
+_The terminal application showing commit `5966b66` from the Lighthouse project. The author has provided additional information about the commit._
+
+The terminal application showing commit 5966b66 from the Lighthouse project. The author has provided additional information about the commit.
+
+The commit message is Configure Lighthouse run by whitelisting aggregations (#1830). But there's a lot more text than just that. Beneath the commit message, you'll find a couple of lines with additional information about the commit. This section provides further information on the why this commit was needed.
+
+So why do we care about all of this detail? For one thing, it's easier for you to go back and review the changes made to the repository, and it easier for others to review the changes to. Another thing is filtering commits by information in the current message or description area.
+
+We can filter commits with the --grep flag.
+
+How about we filter down to just the commits that reference the word "bug". We can do that with either of the following commands:
+
+$ git log --grep=bug
+$ git log --grep bug
+
+    ⚠️ Watch Out For Spacing ⚠️
+
+    Remember that spacing is an issue, here, too. If you're trying to search for something that is multiple words and has spaces between the words, you need to wrap everything in quotes. For example, to search for unit tests you would need to use the following command, git log --grep="unit tests".
+
+    💡 More On grep 💡
+
+    If you don't know what grep is then the --grep flag might not seem like a logical choice for the flag's name. Grep is a pattern matching tool. It is way beyond the scope of this course to cover grep. But as a brief intro, if you were to run git log --grep "fort", then Git will display only the commits that have the character f followed by the character o followed by r followed by t.
+
+    For more info on Grep, check out our Shell Workshop course.
+
+Question 3 of 3
+
+One of the following browsers had a CSS bug that was fixed by a commit. Use git log and the --grep flag to figure out which browser had the bug.
+
+Firefox
+Recap
+
+The git log command is extremely powerful, and you can use it to discover a lot about a repository. But it can be especially helpful to discover information about a repository that you're collaborating on with others. You can use git log to:
+
+    group commits by author with git shortlog
+
+      $ git shortlog
+
+    filter commits with the --author flag
+
+      $ git log --author="Richard Kalehoff"
+
+    filter commits using the --grep flag
+
+      $ git log --grep="border radius issue in Safari"
+
+
+
+
+
+
+Determining What To Work On
+What To Work On
+
+Let's say you're using some third-party library to help you build a project. What happens if, while you're using this third-party library, you come across a bug or a misspelling? You have the skill to be able to fix it, but you don't have direct access to make modifications to the original library. Well that's not a problem because you know that forking another developer's repository copies it to your account and gives you full access to git pull and git push to it!
+
+But what are you supposed to do now that you've got full access to a duplicate of the other developer's project. We'll look at this in the next section but if you have forked a project and you have code in your fork that's not in the original project, you can get code into the original project by sending the original project's maintainer a request to include your code changes. This request is known as a "Pull Requests". Again, we'll look at sending and working with pull requests in the next lesson.
+
+So you know it's possible to get your code in the original project and you know you want to help and fix this spelling/code mistake. So you got something to work on! But how do you go about actually contributing to the project in the way that the original project maintainer will be happy with and will end up actually incorporating your changes?
+
+The first thing you should always look for in a project is a file with the name CONTRIBUTING.md.
+CONTRIBUTING.md File
+
+The name of the `CONTRIBUTING.md file is typically written in all caps so that it's easily seen. As you could probably tell by its name, this file lists out the information you should follow to contribute to the project. You should look for this file before you start doing development work of any kind.
+
+Let's look at the lighthouse project's contributing file:
+_Google's Lighthouse project's CONTRIBUTING.md file._
+
+Google's Lighthouse project's CONTRIBUTING.md file.
+
+You can see that the top line of the file says:
+
+    We'd love your help! This doc covers how to become a contributor and submit code to the project.
+
+There are two main sections to this file:
+
+    the "For Contributors" section
+    the "For Maintainers" section
+
+Each one of these sections has subsections of its own to instruct readers on how to contribute to and work with this project.
+
+Let's take a look at the section on signing the contributors license. Here's what it looks like at the time of making the course:
+_The Contributor License Agreement section of Google's Lighthouse project's CONTRIBUTING.md file._
+
+The Contributor License Agreement section of Google's Lighthouse project's CONTRIBUTING.md file.
+
+You can see that to be able to contribute to this project you need to sign Google's Contributor License Agreement.
+
+Take a look through the Lighthouse project's contributing file. What file contains the information about the code styles for the Lighthouse project?
+
+.eslintrc
+
+As you can see this contributor file has a ton of information in it. So you should definitely look for a CONTRIBUTING.md file when you want to contribute to a project.
+GitHub Issues
+
+If your code change is a simple spelling mistake then you can probably just go ahead and make that change. But if your change is more substantial where it modifies a number of files in a significant way, then you probably want to get approval by the project's maintainer(s) before you start working on it. You definitely don't want to spend a couple hours making changes to the project only to find out that someone else is doing the exact same thing. You'd just be wasting a lot of time and energy duplicating work.
+
+In a CONTRIBUTING.md file it explains how your code should be formatted and the steps you should go about to contribute, but how do you know what you should contribute? You should talk to the project maintainers directly. GitHub has a fantastic interface for asking questions of the project maintainer in an open way that lets everyone see what's being done with the project.
+
+This is the GitHub Issues interface:
+_The Issues page of the Lighthouse project._
+
+The Issues page of the Lighthouse project.
+
+Now, "issues" doesn't mean that there's actually a bug, it can just be any change that needs to be made to the project. GitHub's issue tractor is quite sophisticated. Each issue can:
+
+    have a label or multiple labels applied to it
+    can be assigned to an individual
+    can be assigned a milestone (for example the issue will be resolved by the next major release)
+
+But probably one of the most important aspects of the issue tracker is that each issue can have its own comments, so a conversation can form around the issue.
+
+Check out this issue that has a number of comment:
+_The first few comments of an issue dealing with compatibility of Chrome and the Lighthouse extension._
+
+The first few comments of an issue dealing with compatibility of Chrome and the Lighthouse extension.
+
+Another thing that's nice about issues is:
+
+    they let you subscribe to an issue so you'll be notified of new comments and code changes
+    you can communicate back and forth with a project maintainer on a specific change
+
+Before you contribute anything to a file, check out the instructions in CONTRIBUTING.md. Then check out the project's issues and look to see if there's anything that's similar to what you want to contribute. If there is, then subscribe to that issue and read the existing conversation to see if you can help.
+
+If you've looked through the list of issues and don't see one that similar to what you want to do, then you can create a new issue of your own. On every page of the GitHub issues interface, you'll find the new issue button:
+_The new issue button on the Lighthouse project's issue page._
+
+The new issue button on the Lighthouse project's issue page.
+
+Clicking on that button brings you to create a new issue
+_The new issue page for the Lighthouse project. A notice about reviewing the guidelines for contributing displays above the form._
+
+The new issue page for the Lighthouse project. A notice about reviewing the guidelines for contributing displays above the form.
+New Issue Page
+
+One really cool thing about the new issue page is that, if the project has a CONTRIBUTING.md file, it will display a notification at the top of the page recommending that you check out the guidelines on how to contribute to the project. Clicking on the "guidelines for contributing" link takes you to the CONTRIBUTING.md file.
+
+The GitHub issues interface support markdown so when you create your issue you can use Markdown to format it and exactly the way you want by including links, images, bulleted lists, and code blocks.
+
+    💡 Learn Markdown! 💡
+
+    From the README file, to the New Issue Page, to commenting, Markdown is incredibly important! If you're new to Markdown, we discuss everything about it in our Writing READMEs course. It's short, so why not take an hour to learn this incredible skill!
+
+Just like crafting a descriptive commit message, you want to create an issue with an informative title that explains briefly what you want to do. Then, in the comments section, provide plenty of detail on what the change is, or why you think it's needed, or how this will make the project better.
+
+Typically, the project's maintainer has a full-time job and works on their project on the side, so give them some time to respond to your issue before you dive in and start making your changes. Once the project maintainer has given you the go-ahead it's time to start working on the changes you want to contribute back to the project.
+Topic Branches
+
+The best way to organize the set of commits/changes you want to contribute back to the project is to put them all on a topic branch. Now what do I mean by a topic branch? Unlike the master branch which is the default branch that holds all of the commits for your entire project, a topic branch host commits for just a single concept or single area of change.
+
+For example if there is a problem with the login form for logging into the website, then a branch name to address this specific issue could be called:
+
+    login
+    login-bug
+    signup-bug
+    login-form-bug
+    etc.
+
+There are plenty of names that can be used for a topic branch's name. You just want to use a clear descriptive name for the branch so that if, for example, you list out all of the branches you can immediately see what changes are supposed to be in a branch just by its name.
+Question 2 of 2
+
+One of the branches in the Lighthouse project is named add-a11y-tests. Do you think that's a good name for a topic branch?
+
+(Hint - a11y stands for "accessibility". In the word "accessibility", there are eleven letters between the a and the y, so it gets shortened to just a11y!)
+
+    Yes
+
+One thing to keep in mind is that sometimes a project has specific requirements on what to name your topic branch. For example, if a branch is going to be addressing bug fixes, then many projects require a bugfix- prefix. Going back to our branch that was dealing with a bug with the login form, it would have to be named something like bugfix-login-form. So definitely check out the CONTRIBUTING.md file to see if they provide instructions on what you should name your topic branches.
+Best Practices
+Write Descriptive Commit Messages
+
+While we're talking about naming branches clearly that describe what changes the branch contains, I need to throw in another reminder about how critical it is to write clear, descriptive, commit messages. The more descriptive your branch name and commit messages are the more likely it is that the project's maintainer will not have to ask you questions about the purpose of your code or have dig into the code themselves. The less work the maintainer has to do, the faster they'll include your changes into the project.
+Create Small, Focused Commits
+
+This has been stressed numerous times before but make sure when you are committing changes to the project that you make smaller commits. Don't make massive commits that record 10+ file changes and changes to hundreds of lines of code. You want to make smaller, more frequent commits that record just a handful of file changes with a smaller number of line changes.
+
+Think about it this way: if the developer does not like a portion of the changes you're adding to a massive commit, there's no way for them to say, "I like commit A, but just not the part where you change the sidebar's background color." A commit can't be broken down into smaller chunks, so make sure your commits are in small enough chunks and that each commit is focused on altering just one thing. This way the maintainer can say I like commits A, B, C, D, and F but not commit E.
+Update The README
+
+And lastly if any of the code changes that you're adding drastically changes the project you should update the README file to instruct others about this change.
+Recap
+
+Before you start doing any work, make sure to look for the project's CONTRIBUTING.md file.
+
+Next, it's a good idea to look at the GitHub issues for the project
+
+    look at the existing issues to see if one is similar to the change you want to contribute
+    if necessary create a new issue
+    communicate the changes you'd like to make to the project maintainer in the issue
+
+When you start developing, commit all of your work on a topic branch:
+
+    do not work on the master branch
+    make sure to give the topic branch clear, descriptive name
+
+As a general best practice for writing commits:
+
+    make frequent, smaller commits
+    use clear and descriptive commit messages
+    update the README file, if necessary
+
+
+
+
+Create a Pull Request
+A pull request is a request to the original or source repository's maintainer to include changes in their project that you made in your fork of their project. You are requesting that they pull in changes you've made.
+
+Let's get a high-level overview of what this entails and then we'll dig into the details.
+
+Let's walk through the steps to issue a pull request of our own! If you've been following along then you've forked Lam's travel plans repository to your own account, and you've made one or two additional commits to your forked version.
+
+In the previous lesson, I created a topic branch called include-richards-destinations, added a few commits to it, and pushed that branch to GitHub. Remember that when you're creating a good pull request you want to have changes on a branch that's sole reason to exist is for these changes. Remember the name for these types of branches?...topic branches!
+We're about to create a pull request (how exciting!), so let's make sure we've both got the same setup. Please answer the following:
+Task List
+
+You just created a pull request! Congratulations! 🙌🏼
+
+As you can see, it's actually not too difficult to create a pull request. When I was first learning Git, GitHub, and how to collaborate, I was extremely nervous about making commits, and working with remote repos, but especially submitting a pull request to another developer's project! As long as you following the steps we covered in the previous section on:
+
+    reviewing the project's CONTRIBUTING.md file
+    checking out the project's existing issues
+    talking with the project maintainer
+
+...your pull request is sure to be included!
+Recap
+
+A pull request is a request for the source repository to pull in your commits and merge them with their project. To create a pull request, a couple of things need to happen:
+
+    you must fork the source repository
+    clone your fork down to your machine
+    make some commits (ideally on a topic branch!)
+    push the commits back to your fork
+    create a new pull request and choose the branch that has your new commits
+
+
+
+
+
+Stay in sync with source project
+While you're working on a topic branch of changes that you want to make to a repository, that repository will probably be receiving updates of its own from the original authors.
+Stars & Watching
+
+If you want to keep up-to-date with the Repository, GitHub offers a convenient way to keep track of repositories - it lets you star repositories:
+_The Star button and level for a repository._
+
+The Star button and level for a repository.
+
+You can go to https://github.com/stars to list out and filter all of the repositories that you have starred.
+
+Starring is helpful if you want to keep track of certain repositories. But it's not entirely helpful if you need to actively keep up with a repositories development because you have to manually go to the stars page to view the repositories and see if they've changed.
+
+    💡 Stars & Popularity 💡
+
+    Starring can be a useful feature to help you keep track of repositories you're interested in. But stars have also turned into a means of measuring a repo's popularity.
+
+    If you'd rather not increase a repository's stars, then check out "watching" a repository. Let's look at that right now!
+
+Watching A Repository
+
+If you need to keep up with a project's changes and want to be notified of when things change, GitHub offers a "Watch" feature:
+_The Notification settings. "Watching" a repository will alert you to all activity._
+
+The Notification settings. "Watching" a repository will alert you to all activity.
+
+If you're working on a repository quite often, then I'd suggest setting the watch setting to "Watching". This way GitHub will notify you whenever anything happens with the repository like people pushing changes to the repository, new issues being created, or comments being added to existing issues.
+Including Upstream Changes
+
+Now that you know about watching your repository let say that you're watching it and you get notified that some commits have been pushed to the original, source repository. How do you go about getting those changes into your fork of the repository? If you want to keep doing development on your fork then you'd need your fork to stay in sync with the source repository as much as possible.
+
+Let's see how we can get these changes from the remote repository into our repository.
+
+Incase Lam starts making changes to her project that I won't have in my fork of her project, I'll add her project as an additional remote so that I can stay in sync with her.
+
+In my local repository, I already have one remote repository which is origin remote.
+_The terminal application showing the existing connect to the remote repository. This is my remote repository and has the shortname `origin`._
+
+The terminal application showing the existing connect to the remote repository. This is my remote repository and has the shortname origin.
+
+Remember that the word origin is just the default name that's used when you git clone a remote repository for the first time. We're going to use the git remote command to add a new shortname and URL to this list. This will give us a connection to the source repository.
+
+$ git remote add upstream https://github.com/udacity/course-collaboration-travel-plans.git
+
+Notice that I've used the name upstream as the shortname to reference the source repository. As with the origin shortname, the word upstream here is not special in any way; It's just a regular word. This could have been any word... like the word "banana". But the word "upstream" is typically used to refer to the source repository.
+
+Let's check out what the list of remotes looks like now after adding this new remote:
+_The terminal application show both information about both remotes - `origin` and `upstream`._
+
+The terminal application show both information about both remotes - origin and upstream.
+Origin vs Upstream Clarification
+
+One thing that can be a tiny bit confusing right now is the difference between the origin and upstream. What might be confusing is that origin does not refer to the source repository (also known as the "original" repository) that we forked from. Instead, it's pointing to our forked repository. So even though it has the word origin is not actually the original repository.
+
+Remember that the names origin and upstream are just the default or de facto names that are used. If it's clearer for you to name your origin remote mine and the upstream remote source-repo, then by all means, go ahead and rename them. What you name your remote repositories in your local repository does not affect the source repository at all.
+_Using the `git remote rename` command to rename `origin` to `mine` and `upstream` to `source-repo`._
+
+Using the git remote rename command to rename origin to mine and upstream to source-repo.
+
+    ⚠️ Resetting Remote Names ⚠️
+
+    The image above demos the renaming of the remotes, but I have returned them to their default/defacto names of origin and upstream with the following commands:
+
+    $ git remote rename mine origin
+    $ git remote rename source-repo upstream
+
+Pulling Upstream Changes
+
+Now to get the changes from upstream remote repository, all we have to do is run a git pull and use the upstream shortname rather than the origin shortname:
+
+$ git pull upstream master
+
+_The terminal application showing the results of doing `git fetch upstream master`. A new branch is added to the local repository._
+
+The terminal application showing the results of doing git fetch upstream master. A new branch is added to the local repository.
+Question 1 of 2
+
+Now that you've added a connection to the new upstream remote repository, if you run git fetch upstream master will that update your forked repository on GitHub?
+
+    No
+
+Now that we've fetched all of the changes from the upstream remote repository, let's do a log to see what new information we have in our local repository. I'm using the following git log command to make sure I display all commits from all branches (including remote and tracking branches!):
+
+$ git log --oneline --graph --decorate --all
+
+_The terminal application showing the log of my local repository after fetching the `upstream` remote's changes._
+
+The terminal application showing the log of my local repository after fetching the upstream remote's changes.
+
+It can be a bit difficult to read with the wrapping of the commit messages but you should be able to see that there is now an upstream/master remote branch that is ahead of the local master branch. upstream/master is on commit 52e493f while the master branch is on commit 1c12194.
+
+We can use the upstream/master branch to keep track of where the source repository's master branch is. We can now get any changes that are made to the source repository's master branch by just running git fetch upstream master.
+
+Using git fetch upstream master pulled in the changes from the master branch on the upstream remote repository.
+
+What single command would we use if we want to fetch the upstream/master changes and merge them into the master branch?
+git fetch merge upstream master
+
+To push these new changes from the Lam's repository, we don't want to run git push origin upstream/master because upstream/master is not a local branch. To get these changes into my forked version of her project, I could merge upstream/master into an existing branch (like the local master branch) and push that.
+
+# to make sure I'm on the correct branch for merging
+$ git checkout master
+
+# merge in Lam's changes
+$ git merge upstream/master
+
+# send Lam's changes to *my* remote
+$ git push origin master
+
+Recap
+
+When working with a project that you've forked. The original project's maintainer will continue adding changes to their project. You'll want to keep your fork of their project in sync with theirs so that you can include any changes they make.
+
+To get commits from a source repository into your forked repository on GitHub you need to:
+
+    get the cloneable URL of the source repository
+    create a new remote with the git remote add command
+        use the shortname upstream to point to the source repository
+        provide the URL of the source repository
+    fetch the new upstream remote
+    merge the upstream's branch into a local branch
+    push the newly updated local branch to your origin repo
+
+
+
+
+
+Manage an active PR
+The project maintainer may decide not to accept your changes right away. They might request you to make some additional changes to your code before accepting your request and merging in your changes. Most likely they will communicate their desired changes through the conversation on the pull requests page.
+_The project's maintainer is requesting some changes be made in the pull request._
+
+The project's maintainer is requesting some changes be made in the pull request.
+
+We can see that the source repository's owner has commented and asked us to combine the commits together.
+
+One thing that I've grown to love about both the Git command line tool and the GitHub interface is how helpful they are with recommendations on what to do next. Near the bottom of the comments, there's a suggestion by GitHub that tells us how to add more commit; we need to add them to the same branch and push to my fork:
+
+    Add more commits by pushing to the include-richards-destinations branch on richardkalehoff/course-collaboration-travel-plan.
+
+When submit a pull request, remember that another developer add your code changes to their project. If they ask you to make some minor (even major!) changes to your pull request, that doesn't mean they're rejecting your work! It just means that they would like the code added to their project in a certain way.
+
+The CONTRIBUTING.md file should be used to list out all information that the project's maintainer wants, so make sure to follow the information there. But that doesn't mean there might be times where the project's maintainer will ask you to do a few additional things.
+
+So what should you do? Well, if you want your pull request to be accepted, then you make the change! Remember that the tab in GitHub is called the "Conversation" tab. So feel free to communicate back and forth with the project's maintainer to clarify exactly what they want you to do.
+
+It also wouldn't hurt to thank them for taking the time to look over your pull request. Most of the developers that are working on open source projects are doing it unpaid. So remember to:
+
+    be kind - the project's maintainer is a regular person just like you
+    be patient - they will respond as soon as they are able
+
+So Lam is asking that I combine my changes together before she'll merge in my pull request. Combining commits together is a process called squashing. Let's look at how to do that!
+Recap
+
+As simple as at may seem, working on an active pull request is mostly about communication!
+
+If the project's maintainer is requesting changes to the pull request, then:
+
+    make any necessary commits on the same branch in your local repository that your pull request is based on
+    push the branch to the your fork of the source repository
+
+The commits will then show up on the pull request page.
+
+
+
+
+
+Squash Commits
+To squash commits together, we're going to use the extremely powerful git rebase command. This is one of my favorite commands, but it did take me quite a while to become comfortable with it. At first, it was somewhat challenging for me to get a handle on how it works, and then (after reading countless warnings online) I was scared to actually use it for fear of irreparably damaging my project's Git history.
+
+But I'm here to tell you that git rebase isn't really all that difficult, and that you can bravely make changes to your repository without fear of doing any damage! (<-- quite the claim, isn't it!?!)
+
+Let's first get a big picture idea of how squashing works, and then we'll actually do some squashing with the git rebase command.
+
+The command I used is:
+
+$ git rebase -i HEAD~3
+
+The Rebase Command
+
+The git rebase command will move commits to have a new base. In the command git rebase -i HEAD~3, we're telling Git to use HEAD~3 as the base where all of the other commits (HEAD~2, HEAD~1, and HEAD) will connect to.
+
+The -i in the command stands for "interactive". You can perform a rebase in a non-interactive mode. While you're learning how to rebase, though, I definitely recommend that you do interactive rebasing.
+Ancestry References
+
+As a brief refresher, HEAD indicates your current location (it could point to several things, but typically it'll either point to a branch name or directly to a commit's SHA). The ~3 part means "three before", so HEAD~3 will be the commit that's three before the one you're currently on. We're using this relative reference to a commit in the git rebase command.
+
+Let me demonstrate how to use this command to combine the three destination commits into one.
+Quiz Question
+
+In the command:
+
+$ git rebase -i HEAD~3
+
+...the HEAD~3 is an ancestry reference to a commit that will act as the new base for the commits that are being rebased.
+
+Which of the following could be used as a reference to a base?
+
+    a SHA
+
+    a branch name
+
+    a tag name
+
+Force Pushing
+
+In the video, I had to force push the branch. I had to do this because GitHub was trying to prevent me from accidentally deleting commits. Because I used the git rebase command, I effectively erased the three separate commits that recorded my addition of Florida, Paris, and Scotland. I used git rebase to combine or squash all of these commits into one, single commit.
+
+Using git rebase creates a new commit with a new SHA. When I tried using git push to send this commit up to GitHub, GitHub knew that accepting the push would erase the three separate commits, so it rejected it. So I had to force push the commits through using git push -f.
+
+    ⚠️ Force Pushing ⚠️
+
+    In this instance, force pushing my commits was necessary. But if you try to push commits and GitHub rejects them, it's trying to help you, so make sure to review what commits you're pushing and the commits that are on GitHub to verify you're not about to overwrite content on your remote repository accidentally!
+
+Rebase Commands
+
+Let's take another look at the different commands that you can do with git rebase:
+
+    use p or pick – to keep the commit as is
+    use r or reword – to keep the commit's content but alter the commit message
+    use e or edit – to keep the commit's content but stop before committing so that you can:
+        add new content or files
+        remove content or files
+        alter the content that was going to be committed
+    use s or squash – to combine this commit's changes into the previous commit (the commit above it in the list)
+    use f or fixup – to combine this commit's change into the previous one but drop the commit message
+    use x or exec – to run a shell command
+    use d or drop – to delete the commit
+
+When to rebase
+
+As you've seen, the git rebase command is incredibly powerful. It can help you edit commit messages, reorder commits, combine commits, etc. So it truly is a powerhouse of a tool. Now the question becomes "When should you rebase?".
+
+Whenever you rebase commits, Git will create a new SHA for each commit! This has drastic implications. To Git, the SHA is the identifier for a commit, so a different identifier means it's a different commit, regardless if the content has changed at all.
+
+So you should not rebase if you have already pushed the commits you want to rebase. If you're collaborating with other developers, then they might already be working with the commits you've pushed. If you then use git rebase to change things around and then force push the commits, then the other developers will now be out of sync with the remote repository. They will have to do some complicated surgery to their Git repository to get their repo back in a working state...and it might not even be possible for them to do that; they might just have to scrap all of their work and start over with your newly-rebased, force-pushed commits.
+Recap
+
+The git rebase command is used to do a great many things.
+
+# interactive rebase
+$ git rebase -i <base>
+
+# interactively rebase the commits to the one that's 3 before the one we're on
+$ git rebase -i HEAD~3
+
+Inside the interactive list of commits, all commits start out as pick, but you can swap that out with one of the other commands (reword, edit, squash, fixup, exec, and drop).
+
+I recommend that you create a backup branch before rebasing, so that it's easy to return to your previous state. If you're happy with the rebase, then you can just delete the backup branch!
+Further Research
+https://git-scm.com/book/en/v2/Git-Branching-Rebasing
+https://git-scm.com/docs/git-rebase
+https://www.atlassian.com/git/tutorials/rewriting-history#git-rebase
+
+
+
+
+I just want to briefly run through all of the new and amazing skills you've acquired taking this course. You now know:
+
+    how to set up remote repositories
+    how to push changes to a remote repository and get changes from it
+    how to fork a repository
+    the initial steps to take when you start working on a new feature or change to the project
+    how to create a pull request
+    and the importance of communicating clearly and frequently with the other stakeholders in the project
+
+    http://up-for-grabs.net/
+    http://www.firsttimersonly.com/
+    https://github.com/search?utf8=%E2%9C%93&q=label%3Afirst-timers-only+is%3Aopen&type=Issues&ref=searchresults
+    https://medium.com/@kentcdodds/first-timers-only-78281ea47455

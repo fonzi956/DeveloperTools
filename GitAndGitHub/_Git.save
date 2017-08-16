@@ -1,0 +1,24 @@
+What you can do in the Terminal for shell:
+
+echo $COLUMNS x $LINES
+
+Which of these commands would list the contents of the Pictures directory?
+Mark all that are correct.
+
+    ls Pictures
+
+    cd Pictures; ls
+
+    ls Pictures/../Pictures
+
+Current working directory (pwd)
+
+Which pieces of information can you find out from ls -l? You may want to do some research to answer this question; use your favorite search engine.
+
+    The name of each listed file or directory.
+
+    The date and time that a file was last modified.
+
+    The size of a file, in bytes.
+
+If you wanted to list all the files whose names start with the word bear, how would you do it?
